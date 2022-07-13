@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  breeze-next-ts:
+    image: node:16-alpine
+    container_name: breeze-next-ts
+    restart: always
+    volumes:
+      - ./:/app
+    working_dir: '/app'
+    command: [ "yarn", "dev" ]
+    networks:
+      - mon
+    labels:
+      - traefik.enable=true
+
+      # HTTP
+      - traefik.http.routers.breeze-next-ts.rule=Host(`${APP_HOST}`)
+      - traefik.http.routers.breeze-next-ts.entrypoints=http
+      - traefik.http.services.breeze-next-ts.loadbalancer.server.port=3000
+
+networks:
+  mon:
+    external: true
